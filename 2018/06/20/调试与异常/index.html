@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="调试与异常," />
+  <meta name="keywords" content="软件调试," />
 
 
 
@@ -80,16 +80,16 @@
 
 
 <meta name="description" content="1.调试与异常主线：Windows对异常的分发支线：从异常分发上学习反调试和反反调试支线：从异常分发上了解调试器的工作原理 异常1.异常的概念2.异常的应用3.异常的原理4.异常的分发 环境：双机调试环境 win7 32虚拟机1.1 将virtualkd的target文件夹拷贝到虚拟机并安装1.2 重启 virtualkd打开vmmon.exe,设置windbg的路径。 windbg  中断与异常">
-<meta name="keywords" content="调试与异常">
+<meta name="keywords" content="软件调试">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
+<meta property="og:title" content="调试与异常">
 <meta property="og:url" content="http://yoursite.com/2018/06/20/调试与异常/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="1.调试与异常主线：Windows对异常的分发支线：从异常分发上学习反调试和反反调试支线：从异常分发上了解调试器的工作原理 异常1.异常的概念2.异常的应用3.异常的原理4.异常的分发 环境：双机调试环境 win7 32虚拟机1.1 将virtualkd的target文件夹拷贝到虚拟机并安装1.2 重启 virtualkd打开vmmon.exe,设置windbg的路径。 windbg  中断与异常">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-20T07:55:36.593Z">
+<meta property="og:updated_time" content="2018-06-20T11:18:36.641Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
+<meta name="twitter:title" content="调试与异常">
 <meta name="twitter:description" content="1.调试与异常主线：Windows对异常的分发支线：从异常分发上学习反调试和反反调试支线：从异常分发上了解调试器的工作原理 异常1.异常的概念2.异常的应用3.异常的原理4.异常的分发 环境：双机调试环境 win7 32虚拟机1.1 将virtualkd的target文件夹拷贝到虚拟机并安装1.2 重启 virtualkd打开vmmon.exe,设置windbg的路径。 windbg  中断与异常">
 
 
@@ -126,7 +126,7 @@
 
 
 
-  <title>Hello World | Hexo</title>
+  <title>调试与异常 | Hexo</title>
   
 
 
@@ -250,7 +250,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Hello World</h1>
+          <h1 class="post-title" itemprop="name headline">调试与异常</h1>
         
 
         <div class="post-meta">
@@ -285,8 +285,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/软件调试/" itemprop="url" rel="index">
-                    <span itemprop="name">软件调试</span>
+                  <a href="/categories/笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">笔记</span>
                   </a>
                 </span>
 
@@ -356,7 +356,7 @@
 <li>VEH机制-向量化异常处理</li>
 <li>VCH机制-向量化异常处理</li>
 </ol>
-<h2 id="day2"><a href="#day2" class="headerlink" title="day2"></a>day2</h2><ol>
+<h2 id="异常分发机制"><a href="#异常分发机制" class="headerlink" title="异常分发机制"></a>异常分发机制</h2><ol>
 <li><p>异常时怎么从CPU转发到操作系统中<br>1.1 CPU的处理：<br>当发生异常的时候，CPU根据异常号调用IDT表中对应的异常处理程序。<br>1.2 操作系统的处理：<br>1.2.1 将各种异常处理函数填充到IDT<br>1.2.2 等待IDT的异常处理函数被调用<br>1.2.2.1 KiTrap03（IDT中3号处理函数），相当于异常的源头。<br>\wrk-v1.2\base\ntos\ke\i386\trap.asm<br>1.2.2.2 函数的功能：开辟栈空间保存了产生异常时的线程环境。通过寄存器传参，调用了CommonDispatchException函数。<br>主要传递了：通过寄存器传递的有：异常地址，异常代码，异常附加参数。通过栈传递的有：线程的上下文。<br>1.2.3 CommonDispatchException<br>1.2.3.1 函数的功能：<br>1.2.3.1.1 开辟一个栈空间，将异常记录信息保存到栈中。<br>1.2.3.1.2 获取异常发生的模式（用户层/内核层）<br>1.2.3.1.3 KiDispatchException:<br>参数1： 异常记录结构体地址<br>参数2： NULL<br>参数3： 参数记录帧<br>参数4： 异常发生的模式<br>参数5： 是否时第一次处理异常（通过KiTrapXX系列函数处理的异常都是第一次）<br>1.2.4 KeDispatchException<br>\wrk-v1.2\base\ntos\ke\i386\exceptn.c<br>1.2.4.1 功能：<br>1.2.4.1.1 内核模式的处理：<br>1.2.4.1.1.1 将异常交给内核调试器处理<br>1.2.4.1.1.2 内核调试器处理不了，交给异常处理机制处理<br>1.2.4.1.1.3 异常处理机制处理不了，进入第二次异常分发。再将异常交给调试器处理<br>1.2.4.1.1.4 还处理不了，就KeBugCheckEx<br>1.2.4.2 用户模式异常的处理<br>1.2.4.2.1 通过发送消息，将调试记录发送到用户层的调试器，并等待调试器的处理结构<br>1.2.4.2.2 如果调试器处理不了，则轮到异常处理机制处理。<br>1.2.4.2.2.1 将内核栈的数据拷贝到用户栈，并将esp指向拷贝后数据的首地址<br>1.2.4.2.2.2 将eip设置为ntdll!<br>KeUserEXceptionDispatch函数中，这样当执行流从内核回到用户层的时候，<br>esp指向了EXCEPTION POINTERS的变量的地址，<br>eip指向了用户层的异常分发函数的地址</p>
 </li>
 <li><p>用户异常处理程序怎么收到的异常</p>
@@ -381,7 +381,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/调试与异常/" rel="tag"># 调试与异常</a>
+            <a href="/tags/软件调试/" rel="tag"># 软件调试</a>
           
         </div>
       
@@ -538,7 +538,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#异常"><span class="nav-number">1.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境：双机调试环境"><span class="nav-number">2.</span> <span class="nav-text">环境：双机调试环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断与异常"><span class="nav-number">3.</span> <span class="nav-text">中断与异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令"><span class="nav-number">4.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows异常处理机制"><span class="nav-number">5.</span> <span class="nav-text">windows异常处理机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#day2"><span class="nav-number"></span> <span class="nav-text">day2</span></a></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#异常"><span class="nav-number">1.</span> <span class="nav-text">异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境：双机调试环境"><span class="nav-number">2.</span> <span class="nav-text">环境：双机调试环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中断与异常"><span class="nav-number">3.</span> <span class="nav-text">中断与异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令"><span class="nav-number">4.</span> <span class="nav-text">命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#windows异常处理机制"><span class="nav-number">5.</span> <span class="nav-text">windows异常处理机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#异常分发机制"><span class="nav-number"></span> <span class="nav-text">异常分发机制</span></a></div>
             
 
           </div>
